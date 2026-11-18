@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      # Localhost only: cloudflared on the host routes draft.christrewartha.com here.
+      - "127.0.0.1:8769:80"

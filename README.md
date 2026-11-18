@@ -55,3 +55,16 @@ Players come from [Sleeper](https://sleeper.com)'s public API (no account or key
 1. **Quickest:** the app is already a mobile-first PWA. "Add to Home Screen" works today.
 2. **App stores, minimal changes:** wrap the build with [Capacitor](https://capacitorjs.com/). Swap `storage.js` to `@capacitor/preferences`.
 3. **Fully native UI:** React Native / Expo. Reuse `src/core/` unchanged and rewrite only the three screens in `src/components/`.
+
+## Deploying
+
+It runs on the home server (`scaramanga.local`, in `~/draft-board`) as an nginx container bound to `127.0.0.1:8769`. The host's `cloudflared` service routes `draft.christrewartha.com` to that port (see `/etc/cloudflared/config.yml`).
+
+To redeploy from this machine:
+
+```sh
+tar --exclude=node_modules --exclude=dist --exclude=.git -czf - . \
+  | ssh scaramanga.local 'mkdir -p ~/draft-board && tar -xzf - -C ~/draft-board && cd ~/draft-board && docker compose up -d --build'
+```
+
+Picks are stored in the browser's localStorage, which is per-origin. Picks made on `localhost` or a LAN address won't show up at `draft.christrewartha.com`.
