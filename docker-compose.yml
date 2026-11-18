@@ -3,5 +3,5 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      # Localhost only: cloudflared on the host routes draft.christrewartha.com here.
+      # Localhost only: put a reverse proxy or tunnel on the host in front of this port.
       - "127.0.0.1:8769:80"

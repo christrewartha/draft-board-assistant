@@ -58,13 +58,13 @@ Players come from [Sleeper](https://sleeper.com)'s public API (no account or key
 
 ## Deploying
 
-It runs on the home server (`scaramanga.local`, in `~/draft-board`) as an nginx container bound to `127.0.0.1:8769`. The host's `cloudflared` service routes `draft.christrewartha.com` to that port (see `/etc/cloudflared/config.yml`).
+`docker compose up -d --build` builds the app and serves it from an nginx container on `127.0.0.1:8769` (see `docker-compose.yml` and `deploy/nginx.conf`). The port is bound to localhost only, so put a reverse proxy or tunnel (e.g. Cloudflare Tunnel, Caddy, nginx) in front of it to expose it on your domain. Change the port mapping in `docker-compose.yml` if you want it reachable on your LAN directly.
 
-To redeploy from this machine:
+To deploy to a remote host over SSH (replace `your-server` with your host):
 
 ```sh
 tar --exclude=node_modules --exclude=dist --exclude=.git -czf - . \
-  | ssh scaramanga.local 'mkdir -p ~/draft-board && tar -xzf - -C ~/draft-board && cd ~/draft-board && docker compose up -d --build'
+  | ssh your-server 'mkdir -p ~/draft-board && tar -xzf - -C ~/draft-board && cd ~/draft-board && docker compose up -d --build'
 ```
 
-Picks are stored in the browser's localStorage, which is per-origin. Picks made on `localhost` or a LAN address won't show up at `draft.christrewartha.com`.
+Picks are stored in the browser's localStorage, which is per-origin. Picks made on `localhost` or a LAN address won't show up on your public domain, and vice versa.
